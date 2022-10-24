@@ -9,6 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +21,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "books")
+@SQLDelete(sql = "UPDATE books SET deleted = true WHERE id = ?")
+@Where(clause = "deleted=false")
 public class Book implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -34,4 +39,7 @@ public class Book implements Serializable {
 
     @Column(name = "description", nullable = true)
     private String description;
+
+    @Column(name = "deleted", columnDefinition = "boolean default false")
+    private Boolean deleted;
 }
