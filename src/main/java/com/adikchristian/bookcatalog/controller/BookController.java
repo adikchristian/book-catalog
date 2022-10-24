@@ -90,6 +90,15 @@ public class BookController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
         }
 
+        Book bookFind = bookService.findById(bookData.getId());
+
+        if(bookFind==null){
+            responseData.setStatus(false);
+            responseData.getMessage().add("Data product tidak ditemukan");
+            responseData.setPayload(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseData);
+        }
+
         Book book = modelMapper.map(bookData, Book.class);
 
         responseData.setStatus(true);

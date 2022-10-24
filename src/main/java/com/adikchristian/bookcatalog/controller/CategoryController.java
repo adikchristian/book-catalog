@@ -92,12 +92,23 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
         }
 
-        Category category = modelMapper.map(categoryData, Category.class);
+        Category categoryFind = categoryService.findById(categoryData.getId());
+
+        if(categoryFind==null){
+            responseData.setStatus(false);
+            responseData.getMessage().add("Data Category tidak ditemukan");
+            responseData.setPayload(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseData);
+        }else{
+            Category category = modelMapper.map(categoryData, Category.class);
 
         responseData.setStatus(true);
         responseData.setMessage(null);
         responseData.setPayload(categoryService.create(category));
         return ResponseEntity.ok(responseData);
+        }
+
+        
     }
 
     @DeleteMapping("/{id}")
