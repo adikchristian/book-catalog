@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.adikchristian.bookcatalog.dto.BookData;
 import com.adikchristian.bookcatalog.dto.ResponseData;
+import com.adikchristian.bookcatalog.model.entities.Author;
 import com.adikchristian.bookcatalog.model.entities.Book;
 import com.adikchristian.bookcatalog.services.BookService;
 
@@ -124,6 +125,11 @@ public class BookController {
         responseData.setPayload(null);
         responseData.getMessage().add("Data Berhasil dihapus");
         return ResponseEntity.ok(responseData);
+    }
+
+    @PostMapping(value = "/{id}", consumes={"application/json"})
+    public void addAuthor(@RequestBody Author author, @PathVariable("id") Long bookId){
+        bookService.addAuthor(author, bookId);
     }
 
 }
