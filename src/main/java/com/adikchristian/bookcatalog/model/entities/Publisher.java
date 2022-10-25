@@ -1,16 +1,21 @@
 package com.adikchristian.bookcatalog.model.entities;
 
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,4 +47,8 @@ public class Publisher implements Serializable {
 
     @Column(name = "deleted", columnDefinition = "boolean default false")
     private boolean deleted;
+
+    @ManyToMany(mappedBy = "publishers", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Book> books;
 }

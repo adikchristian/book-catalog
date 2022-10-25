@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.adikchristian.bookcatalog.dto.BookData;
+import com.adikchristian.bookcatalog.dto.PublisherData;
 import com.adikchristian.bookcatalog.dto.ResponseData;
 import com.adikchristian.bookcatalog.model.entities.Author;
 import com.adikchristian.bookcatalog.model.entities.Book;
+import com.adikchristian.bookcatalog.model.entities.Publisher;
 import com.adikchristian.bookcatalog.services.BookService;
 
 @RestController
@@ -130,6 +132,12 @@ public class BookController {
     @PostMapping(value = "/{id}", consumes={"application/json"})
     public void addAuthor(@RequestBody Author author, @PathVariable("id") Long bookId){
         bookService.addAuthor(author, bookId);
+    }
+
+    @PostMapping(value = "/publisher/{id}", consumes={"application/json"})
+    public void addPublisher(@RequestBody PublisherData publisherData, @PathVariable("id") Long id){
+        Publisher publisher = modelMapper.map(publisherData, Publisher.class);
+        bookService.addPublisher(publisher, id);
     }
 
 }
