@@ -2,6 +2,9 @@ package com.adikchristian.bookcatalog.dto;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import com.adikchristian.bookcatalog.model.entities.Category;
 
 import lombok.Data;
 
@@ -16,4 +19,9 @@ public class BookData {
     private double stock;
 
     private String description;
+
+    @NotNull(message = "Category is required")
+    private Category category;
+
+    private boolean deleted = false;
 }

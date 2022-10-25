@@ -17,27 +17,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.adikchristian.bookcatalog.dto.BookData;
 import com.adikchristian.bookcatalog.dto.PublisherData;
 import com.adikchristian.bookcatalog.dto.ResponseData;
-import com.adikchristian.bookcatalog.model.entities.Author;
-import com.adikchristian.bookcatalog.model.entities.Book;
 import com.adikchristian.bookcatalog.model.entities.Publisher;
-import com.adikchristian.bookcatalog.services.BookService;
+import com.adikchristian.bookcatalog.services.PublisherService;
 
 @RestController
-@RequestMapping(value = "/api/books", produces = "application/json")
-public class BookController {
+@RequestMapping(value = "/api/publisher", produces = "application/json")
+public class PublisherController {
     
     @Autowired
-    private BookService bookService;
+    private PublisherService publisherService;
 
     @Autowired
     private ModelMapper modelMapper;
 
     @PostMapping
-    public ResponseEntity<ResponseData<Book>> create(@Valid @RequestBody BookData bookData, Errors errors){
-        ResponseData<Book> responseData = new ResponseData<>();
+    public ResponseEntity<ResponseData<Publisher>> create(@Valid @RequestBody PublisherData publisherData, Errors errors){
+        ResponseData<Publisher> responseData = new ResponseData<>();
 
         if(errors.hasErrors()){
             for(ObjectError error: errors.getAllErrors()){
@@ -48,41 +45,42 @@ public class BookController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
         }
 
-        Book book = modelMapper.map(bookData, Book.class);
+        Publisher publisher = modelMapper.map(publisherData, Publisher.class);
 
         responseData.setStatus(true);
-        responseData.setMessage(null);
-        responseData.setPayload(bookService.create(book));
+        responseData.setPayload(publisherService.create(publisher));
         return ResponseEntity.ok(responseData);
     }
 
     @GetMapping
-    public ResponseEntity<ResponseData<Iterable<Book>>> findAll(){
-        ResponseData<Iterable<Book>> responseData = new ResponseData<>();
+    public ResponseEntity<ResponseData<Iterable<Publisher>>> findAll(){
+        ResponseData<Iterable<Publisher>> responseData = new ResponseData<>();
+
         responseData.setStatus(true);
-        responseData.setPayload(bookService.findAll());
+        responseData.setPayload(publisherService.findAll());
         return ResponseEntity.ok(responseData);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseData<Book>> findById(@PathVariable("id") Long id){
-        ResponseData<Book> responseData = new ResponseData<>();
-        Book book = bookService.findById(id);
+    public ResponseEntity<ResponseData<Publisher>> findById(@PathVariable("id") Long id){
+        ResponseData<Publisher> responseData = new ResponseData<>();
 
-        if(book==null){
+        Publisher publisher = publisherService.findById(id);
+        if(publisher==null){
             responseData.setStatus(false);
-            responseData.getMessage().add("Data book tidak ditemukan");
             responseData.setPayload(null);
+            responseData.getMessage().add("Data Publisher tidak ditemukan");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseData);
         }
+
         responseData.setStatus(true);
-        responseData.setPayload(book);
+        responseData.setPayload(publisher);
         return ResponseEntity.ok(responseData);
     }
 
     @PutMapping
-    public ResponseEntity<ResponseData<Book>> update(@Valid @RequestBody BookData bookData, Errors errors){
-        ResponseData<Book> responseData = new ResponseData<>();
+    public ResponseEntity<ResponseData<Publisher>> update(@Valid @RequestBody PublisherData publisherData, Errors errors){
+        ResponseData<Publisher> responseData = new ResponseData<>();
 
         if(errors.hasErrors()){
             for(ObjectError error: errors.getAllErrors()){
@@ -93,51 +91,37 @@ public class BookController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
         }
 
-        Book bookFind = bookService.findById(bookData.getId());
-
-        if(bookFind==null){
+        Publisher publisherFind = publisherService.findById(publisherData.getId());
+        if(publisherFind==null){
             responseData.setStatus(false);
-            responseData.getMessage().add("Data product tidak ditemukan");
             responseData.setPayload(null);
+            responseData.getMessage().add("Data Publisher tidak ditemukan");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseData);
         }
 
-        Book book = modelMapper.map(bookData, Book.class);
+        Publisher publisher = modelMapper.map(publisherData, Publisher.class);
 
         responseData.setStatus(true);
-        responseData.setMessage(null);
-        responseData.setPayload(bookService.create(book));
+        responseData.setPayload(publisherService.create(publisher));
         return ResponseEntity.ok(responseData);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseData<Book>> remove(@PathVariable("id") Long id){
-        ResponseData<Book> responseData = new ResponseData<>();
-        Book book = bookService.findById(id);
+    public ResponseEntity<ResponseData<Publisher>> delete(@PathVariable("id") Long id){
+        ResponseData<Publisher> responseData = new ResponseData<>();
 
-        if(book==null){
+        Publisher publisher = publisherService.findById(id);
+        if(publisher==null){
             responseData.setStatus(false);
-            responseData.getMessage().add("Data product tidak ditemukan");
             responseData.setPayload(null);
+            responseData.getMessage().add("Data Publisher tidak ditemukan");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseData);
         }
 
-        bookService.removeById(id);
+        publisherService.removeById(id);
         responseData.setStatus(true);
         responseData.setPayload(null);
-        responseData.getMessage().add("Data Berhasil dihapus");
+        responseData.getMessage().add("Publisher Berhasil dihapus");
         return ResponseEntity.ok(responseData);
     }
-
-    @PostMapping(value = "/{id}", consumes={"application/json"})
-    public void addAuthor(@RequestBody Author author, @PathVariable("id") Long bookId){
-        bookService.addAuthor(author, bookId);
-    }
-
-    @PostMapping(value = "/publisher/{id}", consumes={"application/json"})
-    public void addPublisher(@RequestBody PublisherData publisherData, @PathVariable("id") Long id){
-        Publisher publisher = modelMapper.map(publisherData, Publisher.class);
-        bookService.addPublisher(publisher, id);
-    }
-
 }

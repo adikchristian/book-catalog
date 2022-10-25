@@ -7,7 +7,9 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.adikchristian.bookcatalog.model.entities.Author;
 import com.adikchristian.bookcatalog.model.entities.Book;
+import com.adikchristian.bookcatalog.model.entities.Publisher;
 import com.adikchristian.bookcatalog.model.repos.BookRepos;
 
 @Service
@@ -49,4 +51,25 @@ public class BookService {
         bookRepos.deleteById(id);
     }
 
+    public void addAuthor(Author author, Long bookId){
+        Book book = findById(bookId);
+
+        if(book==null){
+            throw new RuntimeException("Product with ID"+bookId+"No Found");
+        }
+
+        book.getAuthor().add(author);
+        create(book);
+    }
+
+    public void addPublisher(Publisher publisher, Long bookId){
+        Book book = findById(bookId);
+
+        if(book==null){
+            throw new RuntimeException("Product with ID"+bookId+"No Found");
+        }
+
+        book.getPublishers().add(publisher);
+        create(book);
+    }
 }
