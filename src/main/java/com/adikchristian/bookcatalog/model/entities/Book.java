@@ -59,4 +59,11 @@ public class Book implements Serializable {
         name = "book_author",
         joinColumns = @JoinColumn(name = "book_id"))
     private List<Author> author;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "book_publisher",
+        joinColumns = @JoinColumn(name="book_id")
+    )
+    private List<Publisher> publishers;
 }
